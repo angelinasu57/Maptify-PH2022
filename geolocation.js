@@ -5,7 +5,7 @@
 // prompted by your browser. If you see the error "The Geolocation service
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
-let map, userMarker, userPos, userButton, infoWindow;
+let map, userMarker, userPos, userButton, userInfoWindow;
 
 function initMap() {
   const center = new google.maps.LatLng(35.9132, -79.0558); // center chapel hill
@@ -26,8 +26,30 @@ function initMap() {
   };
 
   // TODO: user button, for spotify/etc info
-  infoWindow = new google.maps.InfoWindow({
-    content: "",
+  const userContent = 
+  '<div id="content">' +
+    '<div id="siteNotice">' +
+    "</div>" +
+    '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
+    '<div id="bodyContent">' +
+    "<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large " +
+    "sandstone rock formation in the southern part of the " +
+    "Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) " +
+    "south west of the nearest large town, Alice Springs; 450&#160;km " +
+    "(280&#160;mi) by road. Kata Tjuta and Uluru are the two major " +
+    "features of the Uluru - Kata Tjuta National Park. Uluru is " +
+    "sacred to the Pitjantjatjara and Yankunytjatjara, the " +
+    "Aboriginal people of the area. It has many springs, waterholes, " +
+    "rock caves and ancient paintings. Uluru is listed as a World " +
+    "Heritage Site.</p>" +
+    '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
+    "https://en.wikipedia.org/w/index.php?title=Uluru</a> " +
+    "(last visited June 22, 2009).</p>" +
+    "</div>" +
+    "</div>";
+
+  userInfoWindow = new google.maps.InfoWindow({
+    content: userContent,
   });
 
   // TODO: change, button to pan to current location
@@ -53,30 +75,33 @@ function initMap() {
             icon: userIcon,
             label: "You",
           });
-          google.maps.event.addListener(userMarker, "click", function() {
-            infoWindow.setPosition(userPos);
-            infoWindow.open(map);
+          userMarker.addListener("click", () => {
+            userInfowindow.open({
+              anchor: marker,
+              map: map,
+              shouldFocus: false,
+            });
           });
         },
         () => {
-          handleLocationError(true, infoWindow, map.getCenter());
+          handleLocationError(true, userInfoWindow, map.getCenter());
         }
       );
     } else {
       // Browser doesn't support Geolocation
-      handleLocationError(false, infoWindow, map.getCenter());
+      handleLocationError(false, userInfoWindow, map.getCenter());
     }
   });
 }
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-  infoWindow.setPosition(pos);
-  infoWindow.setContent(
+function handleLocationError(browserHasGeolocation, userInfoWindow, userPos) {
+  userInfoWindow.setPosition(userPos);
+  userInfoWindow.setContent(
     browserHasGeolocation
       ? "Error: The Geolocation service failed."
       : "Error: Your browser doesn't support geolocation."
   );
-  infoWindow.open(map);
+  userInfoWindow.open(map);
 }
 
 // TODO: uh, how to add other ppl as markers???
